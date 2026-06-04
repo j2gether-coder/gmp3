@@ -1,0 +1,9 @@
+# 제외 디렉토리
+audio/
+bin/
+dist/
+setup/
+var/image/
+var/temp/
+var/work/
+video/

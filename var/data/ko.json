@@ -1,0 +1,51 @@
+{
+  "btn.next": "다음 ➡",
+  "btn.prev": "◀ 이전",
+  "btn.first": "⬅ 처음으로",
+  "btn.exit": "❌ 종료",
+  "btn.play": "▶ 재생",
+  "btn.stop": "■ 중지",
+  "btn.execute": "실행",
+  "btn.save": "저장",
+  "btn.edit": "수정",
+
+  "error.app_paths_init_fail": "❌ AppPaths 초기화 실패: %s",
+
+  "step1.title": "Step 1. YouTube 다운로드",
+  "step1.input.url_placeholder": "YouTube URL을 입력하세요",
+  "step1.meta.checking": "🔍 메타 정보 확인 중...",
+  "step1.meta.loading": "메타 정보 수집 중...",
+  "step1.meta.success": "✅ 메타 정보 로드 완료",
+  "step1.meta.fail": "❌ 메타 정보 수집 실패: %s",
+  "step1.meta.duration": "⏱ 동영상 재생 시간 ▶ %s",
+  "step1.download.start": "다운로드 시작...",
+  "step1.download.success": "✅ 다운로드 완료",
+  "step1.download.fail": "❌ 다운로드 실패: %s",
+
+  "step2.title": "Step 2. MP3 변환",
+  "step2.notice.edit_artist_title": "※ Artist와 Title을 수정하세요.",
+  "step2.cover.btn": "🖼 Cover Image 생성 하세요.",
+  "step2.cover.start": "커버 이미지 생성 중...",
+  "step2.cover.success": "✅ 커버 이미지 생성 완료",
+  "step2.cover.fail": "❌ 커버 이미지 생성 실패: %s",
+  "step2.convert.btn": "🎵 MP3로 변환하세요.",
+  "step2.convert.start": "MP3 변환 시작...",
+  "step2.convert.success": "✅ MP3 변환 완료",
+  "step2.convert.fail": "❌ MP3 변환 실패: %s",
+
+  "step3.title": "Step 3. MP3 태그 적용",
+  "step3.tag.start": "태그 적용 중...",
+  "step3.tag.success": "✅ 태그 적용 완료",
+  "step3.tag.fail": "❌ 태그 적용 실패: %s",
+  "step3.rename.success": "파일명 변경 완료",
+  "step3.rename.fail": "파일명 변경 실패: %s",
+
+  "step4.title": "Step 4. MP3 자동 변환",
+  "step4.auto.start": "자동 처리 시작...",
+  "step4.auto.success": "✅ 자동 처리 완료",
+  "step4.auto.fail": "❌ 자동 처리 실패: %s",
+
+  "tip.timestamp.guide": "동영상 설명란의 timestamp를 복사하여 붙여넣기 하세요.",
+  "tip.timestamp.example1": "형식: 00:00:00 Title Artist",
+  "tip.timestamp.example2": "예시: 00:03:12 SongTitle ArtistName"
+}

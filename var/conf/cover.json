@@ -1,0 +1,19 @@
+{
+  "top_bar_height": 80,
+  "bottom_bar_height": 80,
+
+  "artist": {
+    "x": 30,
+    "y": 30,
+    "font_size": 14
+  },
+
+  "title": {
+    "x": 30,
+    "y": 50,
+    "font_size": 18
+  },
+
+  "max_text_width": 450,
+  "line_spacing": 22
+}

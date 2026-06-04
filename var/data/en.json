@@ -1,0 +1,51 @@
+{
+  "btn.next": "Next ➡",
+  "btn.prev": "◀ Back",
+  "btn.first": "⬅ First",
+  "btn.exit": "❌ Exit",
+  "btn.play": "▶ Play",
+  "btn.stop": "■ Stop",
+  "btn.execute": "Run",
+  "btn.save": "Save",
+  "btn.edit": "Edit",
+
+  "error.app_paths_init_fail": "❌ AppPaths initialization failed: %s",
+
+  "step1.title": "Step 1. YouTube Download",
+  "step1.input.url_placeholder": "Enter YouTube URL",
+  "step1.meta.checking": "🔍 Checking metadata...",
+  "step1.meta.loading": "Loading metadata...",
+  "step1.meta.success": "✅ Metadata loaded successfully",
+  "step1.meta.fail": "❌ Metadata load failed: %s",
+  "step1.meta.duration": "⏱ Duration ▶ %s",
+  "step1.download.start": "Starting download...",
+  "step1.download.success": "✅ Download complete",
+  "step1.download.fail": "❌ Download failed: %s",
+
+  "step2.title": "Step 2. MP3 Conversion",
+  "step2.notice.edit_artist_title": "Edit Artist and Title.",
+  "step2.cover.btn": "🖼 Generate Cover Image",
+  "step2.cover.start": "Generating cover image...",
+  "step2.cover.success": "✅ Cover image created",
+  "step2.cover.fail": "❌ Cover image failed: %s",
+  "step2.convert.btn": "🎵 MP3 conversion.",
+  "step2.convert.start": "Starting MP3 conversion...",
+  "step2.convert.success": "✅ MP3 conversion complete",
+  "step2.convert.fail": "❌ MP3 conversion failed: %s",
+
+  "step3.title": "Step 3. Apply MP3 Tag",
+  "step3.tag.start": "Applying tag...",
+  "step3.tag.success": "✅ Tag applied successfully",
+  "step3.tag.fail": "❌ Tag application failed: %s",
+  "step3.rename.success": "Filename updated",
+  "step3.rename.fail": "Filename update failed: %s",
+
+  "step4.title": "Step 4. Auto MP3 Conversion",
+  "step4.auto.start": "Starting automatic processing...",
+  "step4.auto.success": "✅ Automatic processing complete",
+  "step4.auto.fail": "❌ Automatic processing failed: %s",
+
+  "tip.timestamp.guide": "Copy and paste timestamps from the video description.",
+  "tip.timestamp.example1": "Format: 00:00:00 Title Artist",
+  "tip.timestamp.example2": "Example: 00:03:12 SongTitle ArtistName"
+}
