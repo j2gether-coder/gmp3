@@ -62,8 +62,19 @@ func main() {
 
 	// =========================
 	// 모드 분기 (GUI 의 AutoMode 체크박스에 해당)
+	//   - 챕터가 있을 때만 분할 여부를 물어본다 (기본값 Yes).
+	//   - 챕터가 없으면 나눌 기준이 없으므로 질문을 생략하고
+	//     곧바로 단일 MP3 변환으로 진행한다.
 	// =========================
-	if askYesNo("\n분할 변환(여러 곡으로 나누기)을 하시겠습니까?", false) {
+	split := false
+	if len(meta.Chapters) > 0 {
+		split = askYesNo(
+			fmt.Sprintf("\n%d개 챕터가 감지되었습니다. 챕터 기준으로 분할 변환하시겠습니까?", len(meta.Chapters)),
+			true,
+		)
+	}
+
+	if split {
 		step4(state, meta, videoPath)
 	} else {
 		mp3Path := step2(state, meta, videoPath)
@@ -258,7 +269,7 @@ func step3(state *app.AppState, meta *service.YTMeta, mp3Path string) {
 func step4(state *app.AppState, meta *service.YTMeta, videoPath string) {
 	fmt.Println("\n[Step 4] 분할 변환")
 
-	segments := askSegments(state, meta)
+	segments := askSegments(meta)
 	if len(segments) == 0 {
 		fatal("변환할 구간이 없습니다.")
 	}
@@ -316,46 +327,28 @@ func step4(state *app.AppState, meta *service.YTMeta, videoPath string) {
 	}
 }
 
-// askSegments: Step4 의 모드(Chapter/Timestamp/Single) 선택 후 구간 목록 생성
-func askSegments(state *app.AppState, meta *service.YTMeta) []service.Segment {
-	hasChapter := len(meta.Chapters) > 0
-
-	fmt.Println("\n분할 모드를 선택하세요:")
-	if hasChapter {
-		fmt.Println("  1) Chapter   - 영상 챕터 기준 (감지됨)")
-	}
-	fmt.Println("  2) Timestamp - timestamp.txt 직접 작성")
-	fmt.Println("  3) Single    - 전체를 1개 파일로")
-
-	def := "3"
-	if hasChapter {
-		def = "1"
-	}
-	choice := prompt("선택", def)
-
-	switch strings.TrimSpace(choice) {
-	case "1":
-		if !hasChapter {
-			fmt.Println("  ⚠ 챕터가 없어 Single 모드로 진행합니다.")
-			return singleSegment(meta)
-		}
-		var segs []service.Segment
-		for _, ch := range meta.Chapters {
-			segs = append(segs, service.Segment{
-				StartSec: ch.StartTime,
-				EndSec:   ch.EndTime,
-				Title:    ch.Title,
-				Artist:   meta.Artist,
-			})
-		}
-		return segs
-
-	case "2":
-		return askTimestampSegments(state, meta)
-
-	default:
+// askSegments: Step4 의 챕터 구간 목록 생성
+//
+// 분할 여부(챕터 기준)는 이미 main() 의 Y/n 질문에서 결정되었으므로
+// 여기서 모드를 다시 묻지 않고 곧바로 챕터 구간을 만든다. (이중 질의 제거)
+// CLI 는 간편 변환 수단이므로 timestamp.txt 수동 작성 모드는 제공하지 않는다.
+// (사용자가 직접 타임스탬프를 편집하는 흐름은 GUI 에서만 지원)
+// 이 함수는 챕터가 있을 때만 호출되지만, 방어적으로 챕터 부재도 처리한다.
+func askSegments(meta *service.YTMeta) []service.Segment {
+	if len(meta.Chapters) == 0 {
 		return singleSegment(meta)
 	}
+
+	var segs []service.Segment
+	for _, ch := range meta.Chapters {
+		segs = append(segs, service.Segment{
+			StartSec: ch.StartTime,
+			EndSec:   ch.EndTime,
+			Title:    ch.Title,
+			Artist:   meta.Artist,
+		})
+	}
+	return segs
 }
 
 func singleSegment(meta *service.YTMeta) []service.Segment {
@@ -365,30 +358,6 @@ func singleSegment(meta *service.YTMeta) []service.Segment {
 		Title:    meta.Title,
 		Artist:   meta.Artist,
 	}}
-}
-
-// askTimestampSegments: 템플릿을 만들고 사용자가 편집하도록 안내한 뒤 파싱
-func askTimestampSegments(state *app.AppState, meta *service.YTMeta) []service.Segment {
-	path := filepath.Join(state.Paths.Temp, "timestamp.txt")
-
-	template := "# 영상 설명/댓글의 타임스탬프를 붙여넣으세요.\n" +
-		"# 형식:  00:00:00 Title - Artist\n" +
-		"# 예시:  00:03:12 SongTitle - ArtistName\n\n"
-	_ = os.WriteFile(path, []byte(template), 0644)
-
-	fmt.Println("\n· 타임스탬프 파일을 생성했습니다:")
-	fmt.Println("   ", path)
-	fmt.Println("  이 파일을 편집/저장한 뒤 Enter 를 누르세요.")
-	_, _ = reader.ReadString('\n')
-
-	sep := prompt("Title/Artist 구분자", "-")
-	artistFirst := askYesNo("입력 형식이 'Artist - Title' 입니까?", false)
-
-	segs, err := service.ParseUserTimestampFile(path, meta.Duration, sep, meta.Artist, artistFirst)
-	if err != nil {
-		fatal("타임스탬프 파싱 실패: " + err.Error())
-	}
-	return segs
 }
 
 // pickRandomCover: cover_000 / cover_999 를 제외한 cover_*.jpg 중 무작위 선택
