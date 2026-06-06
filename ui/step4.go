@@ -86,6 +86,11 @@ const (
 	ColArtist
 )
 
+// DefaultSeparator: Title/Artist 구분자 기본값.
+// 작성 안내문(createTimestampFile), 읽기(loadTimestampFile),
+// 구분자 재적용(reloadUserTimestamp)에서 모두 이 값을 단일 기준으로 사용한다.
+const DefaultSeparator = "-"
+
 // Button 절차
 type Step4Stage int
 
@@ -187,17 +192,21 @@ func (ui *Step4UI) build() {
 	// ----------------------------
 	ui.timestampArtistFirstCheck = widget.NewCheck(
 		"Input format is Artist - Title",
-		nil,
+		func(bool) {
+			// 순서(Artist/Title) 변경 시 즉시 미리보기 재파싱.
+			// 아직 로드된 데이터가 없으면 무시(불필요한 에러 로그 방지).
+			if len(ui.timestampData) > 0 {
+				ui.reloadUserTimestamp(ui.currentSeparator())
+			}
+		},
 	)
 	ui.timestampArtistFirstCheck.SetChecked(false) // 기본값:  Title - Artist
 
 	ui.timestampSeparatorEntry = widget.NewEntry()
+	ui.timestampSeparatorEntry.SetText(DefaultSeparator) // 현재 구분자를 항상 보이게
+	ui.timestampSeparatorEntry.SetPlaceHolder(DefaultSeparator)
 	ui.refreshTimestampBtn = widget.NewButton(ui.state.I18n.T("btn.edit"), func() {
-		sep := ui.timestampSeparatorEntry.Text
-		if sep == "" {
-			sep = "-"
-		}
-		ui.reloadUserTimestamp(sep)
+		ui.reloadUserTimestamp(ui.currentSeparator())
 	})
 
 	ui.timestampUserControls = container.NewHBox(
@@ -674,10 +683,7 @@ func (ui *Step4UI) loadTimestampFile() {
 		return
 	}
 
-	sep := ui.timestampSeparatorEntry.Text
-	if sep == "" {
-		sep = "_"
-	}
+	sep := ui.currentSeparator()
 
 	inputArtistFirst := ui.timestampArtistFirstCheck.Checked
 
@@ -843,9 +849,8 @@ func (ui *Step4UI) reloadUserTimestamp(sep string) {
 	ui.timestampData = items
 	ui.buildUserTimestampPreview()
 
-	// 구분자 수정 완료
-	ui.timestampSeparatorEntry.SetText("")
-	ui.refreshTimestampBtn.Disable()
+	// 구분자/순서는 파싱 옵션이므로 입력값을 유지하고 버튼도 활성 상태로 둔다.
+	// (몇 번이든 재적용 가능 — 구분자 재수정 불가 문제 해결)
 
 	ui.appendLog(fmt.Sprintf(
 		"✅ Separator '%s' applied successfully (fallback artist: %s)",
@@ -1067,6 +1072,15 @@ func (ui *Step4UI) applyStage() {
 // =======================
 // Helper
 // =======================
+// currentSeparator: 입력칸의 현재 구분자(공백 제거). 비어 있으면 기본값.
+func (ui *Step4UI) currentSeparator() string {
+	sep := strings.TrimSpace(ui.timestampSeparatorEntry.Text)
+	if sep == "" {
+		sep = DefaultSeparator
+	}
+	return sep
+}
+
 func (ui *Step4UI) appendLog(msg string) {
 	if ui.messageBox != nil {
 		fyne.Do(func() { AppendLog(ui.messageBox, msg) })
